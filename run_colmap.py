@@ -31,8 +31,7 @@ def run_colmap(image_dir, output_dir):
         "--database_path", database_path,
         "--image_path", image_dir,
         "--ImageReader.single_camera", "1",
-        "--SiftExtraction.use_gpu", "0",
-        "--verbose"
+        "--SiftExtraction.use_gpu", "0"
     ]):
         print("Failed to execute feature extraction.")
         return
