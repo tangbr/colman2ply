@@ -24,7 +24,8 @@ RUN mkdir -p /app/shaders
 COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py /app/
 
 # Copy the shaders directory into the container
-COPY ../../shaders/ /app/shaders/
+# Copy the shaders directory into the container
+COPY ../../../shaders/ /app/shaders/
 
 # (Optional) If you want an entrypoint script
 # COPY docker_entrypoint.sh /app/docker_entrypoint.sh
