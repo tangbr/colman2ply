@@ -22,31 +22,19 @@ def safe_directory_clear(directory):
                 print(f"Failed to delete {file_path}. Reason: {e}")
 
 def assess_reconstruction_quality():
-    """
-    Assess the quality of the reconstruction based on hypothetical metrics.
-    This could involve:
-    - Checking the number of matched features.
-    - Evaluating the spread or distribution of these features across images.
-    - Looking at the error rates from a bundle adjustment process.
-    
-    Returns:
-        bool: Returns True if the quality is deemed low, False otherwise.
-    """
-    # Hypothetical metrics (These values need to be derived from your actual reconstruction results)
-    num_matched_features = 500  # Example: number of features successfully matched
-    average_reprojection_error = 1.2  # Example: average error in pixel units
+    """Assess the quality of the reconstruction based on hypothetical metrics."""
+    num_matched_features = 500
+    average_reprojection_error = 1.2
+    low_feature_threshold = 800
+    high_error_threshold = 1.0
 
-    # Define thresholds for what you consider to be low quality
-    low_feature_threshold = 800  # Considered low if fewer than 800 features are matched
-    high_error_threshold = 1.0   # Considered low if the reprojection error is more than 1.0 pixels
-
-    # Assess quality based on the thresholds
     if num_matched_features < low_feature_threshold or average_reprojection_error > high_error_threshold:
-        return True  # Low quality
+        return True
     else:
-        return False  # Acceptable quality
+        return False
 
 def extract_frames(video_path, output_dir, step=10, clean_start=False):
+    """Extract frames from a video at a specified step interval."""
     if clean_start:
         safe_directory_clear(output_dir)
     else:
@@ -58,7 +46,6 @@ def extract_frames(video_path, output_dir, step=10, clean_start=False):
 
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     frame_count, saved_count = 0, 0
-
     with tqdm(total=total_frames) as pbar:
         while True:
             ret, frame = cap.read()
@@ -70,7 +57,6 @@ def extract_frames(video_path, output_dir, step=10, clean_start=False):
                 saved_count += 1
             frame_count += 1
             pbar.update(1)
-
     cap.release()
     print(f"✅ Extracted {saved_count} frames to {output_dir}")
 
@@ -82,7 +68,7 @@ if __name__ == "__main__":
     parser.add_argument("--clean_start", action='store_true', help="Clear the output directory before starting")
     args = parser.parse_args()
 
-    # Assess reconstruction quality and adjust frame step
+    # Adjust frame step based on the assessed reconstruction quality
     if assess_reconstruction_quality():
         args.step = max(10, args.step - 10)  # Decrease step if quality is low to increase overlap
     else:
