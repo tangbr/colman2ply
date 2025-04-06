@@ -34,7 +34,6 @@ def run_colmap(image_dir, output_dir, verbose=False):
         "--ImageReader.single_camera", "1",
         "--SiftExtraction.use_gpu", "0"
     ]
-
     if verbose:
         feature_extraction_command.append("--verbose")
 
@@ -63,13 +62,14 @@ def run_colmap(image_dir, output_dir, verbose=False):
         print("Failed to execute sparse reconstruction.")
         return
 
-    # Convert model to text format (.ply) including color
+    print(f"✅ COLMAP Sparse Reconstruction done at {sparse_dir}")
+
+    # Convert model to text format (.ply)
     if not run_command([
         "colmap", "model_converter",
         "--input_path", os.path.join(sparse_dir, "0"),
         "--output_path", os.path.join(output_dir, "model.ply"),
-        "--output_type", "PLY",
-        "--output_format", "ASCII"  # Ensure ASCII format for compatibility
+        "--output_type", "PLY"
     ]):
         print("Failed to convert model to PLY.")
         return
