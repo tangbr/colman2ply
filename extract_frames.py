@@ -11,7 +11,6 @@ def safe_directory_clear(directory):
         os.makedirs(directory)  # Recreate the directory after clearing
     except OSError as e:
         print(f"Warning: Failed to remove directory {directory} - {e}")
-        # If the directory removal fails, try to remove all files inside it
         for filename in os.listdir(directory):
             file_path = os.path.join(directory, filename)
             try:
@@ -22,8 +21,32 @@ def safe_directory_clear(directory):
             except Exception as e:
                 print(f"Failed to delete {file_path}. Reason: {e}")
 
+def assess_reconstruction_quality():
+    """
+    Assess the quality of the reconstruction based on hypothetical metrics.
+    This could involve:
+    - Checking the number of matched features.
+    - Evaluating the spread or distribution of these features across images.
+    - Looking at the error rates from a bundle adjustment process.
+    
+    Returns:
+        bool: Returns True if the quality is deemed low, False otherwise.
+    """
+    # Hypothetical metrics (These values need to be derived from your actual reconstruction results)
+    num_matched_features = 500  # Example: number of features successfully matched
+    average_reprojection_error = 1.2  # Example: average error in pixel units
+
+    # Define thresholds for what you consider to be low quality
+    low_feature_threshold = 800  # Considered low if fewer than 800 features are matched
+    high_error_threshold = 1.0   # Considered low if the reprojection error is more than 1.0 pixels
+
+    # Assess quality based on the thresholds
+    if num_matched_features < low_feature_threshold or average_reprojection_error > high_error_threshold:
+        return True  # Low quality
+    else:
+        return False  # Acceptable quality
+
 def extract_frames(video_path, output_dir, step=10, clean_start=False):
-    """Extracts frames from a video file, optionally clearing the output directory first."""
     if clean_start:
         safe_directory_clear(output_dir)
     else:
@@ -58,5 +81,11 @@ if __name__ == "__main__":
     parser.add_argument("--step", type=int, default=20, help="Save every N-th frame")
     parser.add_argument("--clean_start", action='store_true', help="Clear the output directory before starting")
     args = parser.parse_args()
+
+    # Assess reconstruction quality and adjust frame step
+    if assess_reconstruction_quality():
+        args.step = max(10, args.step - 10)  # Decrease step if quality is low to increase overlap
+    else:
+        args.step = min(50, args.step + 10)  # Increase step if computation needs reduction
 
     extract_frames(args.video, args.out, args.step, args.clean_start)
