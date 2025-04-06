@@ -21,11 +21,11 @@ WORKDIR /app
 RUN mkdir -p /app/shaders
 
 # Copy your Python scripts into the container
-COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py /app/
+COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py ./
 
 # Copy the shaders directory into the container
 # Copy the shaders directory into the container
-COPY ../../../shaders/ /app/shaders/
+COPY ../../shaders/ ./shaders/
 
 # (Optional) If you want an entrypoint script
 # COPY docker_entrypoint.sh /app/docker_entrypoint.sh
