@@ -36,7 +36,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--video", required=True, help="Path to input video")
     parser.add_argument("--out", default="images", help="Output directory for extracted frames")
-    parser.add_argument("--step", type=int, default=50, help="Save every N-th frame")
+    parser.add_argument("--step", type=int, default=20, help="Save every N-th frame")
     args = parser.parse_args()
 
     extract_frames(args.video, args.out, args.step)
