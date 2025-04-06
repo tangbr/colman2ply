@@ -8,20 +8,24 @@ def initialize_database(database_path):
         "--database_path", database_path
     ], check=True)
 
-def run_colmap(image_dir, output_dir):
-    os.makedirs(output_dir, exist_ok=True)
-    # Initialize database
-    database_path = f"{output_dir}/database.db"
-    initialize_database(database_path)
-    # 1. Feature extraction
-    subprocess.run([
-        "colmap", "feature_extractor",
-        "--database_path", os.path.join(output_dir, "database.db"),
-        "--image_path", image_dir,
-        "--ImageReader.single_camera", "1",
-        "--SiftExtraction.use_gpu", "0",
-        "--verbose"   
-    ], check=True)
+def run_command(command):
+    try:
+        subprocess.run(command, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred: {e}")
+        return False
+    return True
+
+# Example usage within your existing functions
+if not run_command([
+    "colmap", "feature_extractor",
+    "--database_path", os.path.join(output_dir, "database.db"),
+    "--image_path", image_dir,
+    "--ImageReader.single_camera", "1",
+    "--SiftExtraction.use_gpu", "0",
+    "--verbose"
+]):
+    print("Failed to execute feature extraction.")
 
     # 2. Exhaustive matching
     subprocess.run([
