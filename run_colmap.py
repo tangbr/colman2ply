@@ -11,12 +11,14 @@ def run_colmap(image_dir, output_dir):
         "--database_path", os.path.join(output_dir, "database.db"),
         "--image_path", image_dir,
         "--ImageReader.single_camera", "1"
+        "--SiftExtraction.use_gpu", "0"  
     ], check=True)
 
     # 2. Exhaustive matching
     subprocess.run([
         "colmap", "exhaustive_matcher",
         "--database_path", os.path.join(output_dir, "database.db")
+        "--SiftMatching.use_gpu", "0"
     ], check=True)
 
     # 3. Sparse reconstruction
