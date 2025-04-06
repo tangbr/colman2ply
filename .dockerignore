@@ -1,45 +1,41 @@
-# Ignore Python cache
+# Python cache and compiled files
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Ignore Git files
+# Git-related files
 .git
 .gitignore
 
-# Ignore system files
-.DS_Store
-Thumbs.db
-
-# Ignore Colab/Notebook files if any
+# Jupyter notebooks and checkpoints
 *.ipynb
 .ipynb_checkpoints/
 
-# Ignore video/image/output folders if mounted at runtime
+# Environment and build artifacts
+.env
+build/
+.colmap/
+
+# Data, video, and output files (mounted at runtime)
 video/
 images/
 sparse/
 dense/
 output/
 
-# Ignore environment and temporary files
-.env
-*.log
-*.tmp
-.git
-__pycache__/
-*.ply
-*.db
-build/
-.colmap/
+# Large binary and database files
 *.mp4
 *.jpg
 *.png
+*.ply
+*.db
 *.npz
 *.npy
-*.pyc
-*.pyo
-*.pyd
-*.swp
+
+# System files
 .DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp

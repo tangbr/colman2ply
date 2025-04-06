@@ -19,10 +19,7 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Build Docker Image
+    - name: Build and Push Docker Image
       run: |
-        docker build --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/my-colmap:ubuntu18 .
-
-    - name: Push Docker Image
-      run: |
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-colmap:ubuntu18
+        docker build --no-cache --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/my-colmap:ubuntu22 .
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-colmap:ubuntu22
