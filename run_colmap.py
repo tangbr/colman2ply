@@ -3,56 +3,72 @@ import argparse
 import os
 
 def initialize_database(database_path):
-    subprocess.run([
+    return run_command([
         "colmap", "database_creator",
         "--database_path", database_path
-    ], check=True)
+    ])
 
 def run_command(command):
     try:
         subprocess.run(command, check=True)
+        return True
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
         return False
-    return True
 
-# Example usage within your existing functions
-if not run_command([
-    "colmap", "feature_extractor",
-    "--database_path", os.path.join(output_dir, "database.db"),
-    "--image_path", image_dir,
-    "--ImageReader.single_camera", "1",
-    "--SiftExtraction.use_gpu", "0",
-    "--verbose"
-]):
-    print("Failed to execute feature extraction.")
+def run_colmap(image_dir, output_dir):
+    os.makedirs(output_dir, exist_ok=True)
+    database_path = os.path.join(output_dir, "database.db")
+
+    # Initialize database
+    if not initialize_database(database_path):
+        print("Database initialization failed.")
+        return
+
+    # 1. Feature extraction
+    if not run_command([
+        "colmap", "feature_extractor",
+        "--database_path", database_path,
+        "--image_path", image_dir,
+        "--ImageReader.single_camera", "1",
+        "--SiftExtraction.use_gpu", "0",
+        "--verbose"
+    ]):
+        print("Failed to execute feature extraction.")
+        return
 
     # 2. Exhaustive matching
-    subprocess.run([
+    if not run_command([
         "colmap", "exhaustive_matcher",
-        "--database_path", os.path.join(output_dir, "database.db"),
+        "--database_path", database_path,
         "--SiftMatching.use_gpu", "0"
-    ], check=True)
+    ]):
+        print("Failed to execute exhaustive matching.")
+        return
 
     # 3. Sparse reconstruction
     sparse_dir = os.path.join(output_dir, "sparse")
     os.makedirs(sparse_dir, exist_ok=True)
-    subprocess.run([
+    if not run_command([
         "colmap", "mapper",
-        "--database_path", os.path.join(output_dir, "database.db"),
+        "--database_path", database_path,
         "--image_path", image_dir,
         "--output_path", sparse_dir
-    ], check=True)
+    ]):
+        print("Failed to execute sparse reconstruction.")
+        return
 
     print(f"✅ COLMAP Sparse Reconstruction done at {sparse_dir}")
 
     # Optional: Convert model to text format (.ply)
-    subprocess.run([
+    if not run_command([
         "colmap", "model_converter",
         "--input_path", os.path.join(sparse_dir, "0"),
         "--output_path", os.path.join(output_dir, "model.ply"),
         "--output_type", "PLY"
-    ], check=True)
+    ]):
+        print("Failed to convert model to PLY.")
+        return
 
     print(f"✅ PLY model created at {os.path.join(output_dir, 'model.ply')}")
 
@@ -63,4 +79,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     run_colmap(args.images, args.out)
-
