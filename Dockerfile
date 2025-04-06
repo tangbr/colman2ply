@@ -1,10 +1,10 @@
-# Use Ubuntu 22.04 (Jammy) so we can install COLMAP from apt
+# Use Ubuntu 22.04 (Jammy) as the base image
 FROM ubuntu:22.04
 
-# Avoid interactive prompts
+# Avoid interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install system dependencies + COLMAP + Python
+# Install necessary packages
 RUN apt-get update && apt-get install -y \
     xvfb \
     colmap \
@@ -16,22 +16,25 @@ RUN apt-get update && apt-get install -y \
     libglfw3-dev \
     mesa-utils \
     freeglut3-dev \
-    # (Optional) other tools you might need
- && apt-get clean && rm -rf /var/lib/apt/lists/*
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
-# Install Python packages for frame extraction and Gaussian splatting scripts
+# Install Python packages for frame extraction and other scripts
 RUN pip3 install --no-cache-dir opencv-python tqdm PyOpenGL PyOpenGL_accelerate pygame numpy plyfile torch
 
 # Create a working directory
 WORKDIR /app
 
-# Copy your scripts and shaders into the container
-COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py shaders/ ./shaders/
+# Copy your Python scripts from the Dockerfile directory to the container
+COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py ./ 
 
-# (Optional) If you want an entrypoint script
+# Copy the shaders directory from two levels up to the container
+COPY ../../shaders/ ./shaders/
+
+# Optional: Set up an entrypoint script if needed
 # COPY docker_entrypoint.sh /app/docker_entrypoint.sh
 # RUN chmod +x /app/docker_entrypoint.sh
 # ENTRYPOINT ["/app/docker_entrypoint.sh"]
 
-# Default command (example: run your Python scripts)
+# Default command to run when starting the container
 CMD ["bash"]

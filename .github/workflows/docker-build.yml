@@ -21,5 +21,5 @@ jobs:
 
     - name: Build and Push Docker Image
       run: |
-        docker build --no-cache --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/my-colmap:ubuntu22 .
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-colmap:ubuntu22
+        docker build --no-cache --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/gaussion-style:ubuntu22 .
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/gaussion-style:ubuntu22
