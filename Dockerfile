@@ -1,6 +1,8 @@
 # Use Ubuntu 22.04 (Jammy) so we can install COLMAP from apt
 FROM ubuntu:22.04
 
+RUN apt-get update && \
+    apt-get install -y xvfb  # Install xvfb
 # Avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
