@@ -40,6 +40,7 @@ def load_shader(file_path):
 def main(ply_file_path):
     device = "GPU" if torch.cuda.is_available() else "CPU"
     print(f"Running on {device}")
+    print(f"Processing {input_file} to {output_file}")
 
     pygame.init()
     display = (800, 600)
@@ -99,7 +100,9 @@ def main(ply_file_path):
     sys.exit()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--ply_file_path", default="./model.ply", help="Path to the .ply file")
+    parser = argparse.ArgumentParser(description="Transform .ply file to processed .ply using Gaussian splatting.")
+    parser.add_argument("--input", type=str, required=True, help="Input .ply file path")
+    parser.add_argument("--output", type=str, required=True, help="Output .ply file path")
     args = parser.parse_args()
-    main(args.ply_file_path)
+
+    main(args.input, args.output)
