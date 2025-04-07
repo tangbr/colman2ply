@@ -17,14 +17,10 @@ RUN pip3 install --no-cache-dir opencv-python tqdm PyOpenGL PyOpenGL_accelerate 
 # Create a working directory
 WORKDIR /app
 
-# Ensure the shaders directory exists
 RUN mkdir -p /app/shaders
 
-# Copy your Python scripts into the container
 COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py ./
 
-# Copy the shaders directory into the container
-# Copy the shaders directory into the container
 COPY ../../shaders/ ./shaders/
 
 # (Optional) If you want an entrypoint script
