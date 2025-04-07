@@ -19,6 +19,13 @@ RUN pip3 install --no-cache-dir opencv-python tqdm PyOpenGL PyOpenGL_accelerate 
 WORKDIR /app
 
 RUN mkdir -p ./shaders
+RUN mkdir -p ./data
+RUN mkdir -p ./images
+RUN mkdir -p ./output
+
+RUN chmod -R 777 ./data
+RUN chmod -R 777 ./images
+RUN chmod -R 777 ./output
 
 COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py ./
 
