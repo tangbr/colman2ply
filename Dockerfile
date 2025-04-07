@@ -1,40 +1,48 @@
-# Use Ubuntu 22.04 (Jammy) so we can install COLMAP from apt
-FROM ubuntu:22.04
+# Use Ubuntu 22.04 (Jammy) with CUDA if GPU is needed
+FROM nvidia/cuda:11.0-runtime-ubuntu22.04
 
 # Avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && \
-    apt-get install -y xvfb  # Install xvfb
-
 # Install system dependencies + COLMAP + Python
-RUN apt-get update && apt-get install -y xvfb colmap python3 python3-pip ffmpeg libgl1-mesa-dev libglfw3 libglfw3-dev mesa-utils freeglut3-dev \
- && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Install Python packages for frame extraction scripts
-RUN pip3 install --no-cache-dir opencv-python tqdm PyOpenGL PyOpenGL_accelerate pygame numpy plyfile torch matplotlib pyrr
-
+RUN apt-get update && apt-get install -y \
+    xvfb \
+    colmap \
+    python3 \
+    python3-pip \
+    ffmpeg \
+    libgl1-mesa-dev \
+    libglfw3 \
+    libglfw3-dev \
+    mesa-utils \
+    freeglut3-dev \
+ && pip3 install --no-cache-dir \
+    opencv-python==4.5.2.54 \
+    tqdm \
+    PyOpenGL \
+    PyOpenGL_accelerate \
+    pygame \
+    numpy \
+    plyfile \
+    torch \
+    matplotlib \
+    pyrr \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 # Create a working directory
 WORKDIR /app
 
-RUN mkdir -p ./shaders
-RUN mkdir -p ./data
-RUN mkdir -p ./images
-RUN mkdir -p ./output
+# Set up directories
+RUN mkdir -p ./shaders ./data ./images ./output \
+ && chmod -R 777 ./shaders ./data ./images ./output
 
-RUN chmod -R 777 ./data
-RUN chmod -R 777 ./images
-RUN chmod -R 777 ./output
-
+# Copy necessary files
 COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py ./
-
 COPY ./shaders/ ./shaders/
-
-# (Optional) If you want an entrypoint script
-# COPY docker_entrypoint.sh /app/docker_entrypoint.sh
+# Optional entrypoint
+# COPY docker_entrypoint.sh /app/
 # RUN chmod +x /app/docker_entrypoint.sh
 # ENTRYPOINT ["/app/docker_entrypoint.sh"]
 
-# Default command (example: run your Python scripts)
 CMD ["bash"]

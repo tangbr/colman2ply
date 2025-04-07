@@ -8,9 +8,7 @@ from OpenGL.GL.shaders import compileProgram
 import pyrr
 from plyfile import PlyData
 import torch  # For checking GPU availability
-
-# Define the path to the .ply file
-ply_file_path = r"C:\Users\bruce\senecaAIG\output\model.ply"
+import argparse
 
 def load_ply(filepath):
     try:
@@ -22,7 +20,6 @@ def load_ply(filepath):
         sys.exit(1)
 
 def compile_shader(source, shader_type):
-    """Compile a shader from source."""
     shader = glCreateShader(shader_type)
     glShaderSource(shader, source)
     glCompileShader(shader)
@@ -31,8 +28,16 @@ def compile_shader(source, shader_type):
         raise RuntimeError(f'Shader compilation failed:\n{info}')
     return shader
 
-def main():
-    # Check for GPU availability
+def load_shader(file_path):
+    try:
+        with open(file_path, 'r') as f:
+            shader_src = f.read()
+        return shader_src
+    except IOError as e:
+        print(f"Failed to load shader file: {e}")
+        sys.exit(1)
+
+def main(ply_file_path):
     device = "GPU" if torch.cuda.is_available() else "CPU"
     print(f"Running on {device}")
 
@@ -44,26 +49,17 @@ def main():
     vertex_data = load_ply(ply_file_path)
     vertex_count = len(vertex_data)
 
-    # OpenGL context settings
     glEnable(GL_DEPTH_TEST)
     glPointSize(5)
 
-    # Load shaders
-    try:
-        with open("shaders/vertex_shader.glsl", 'r') as f:
-            vertex_src = f.read()
-        with open("shaders/fragment_shader.glsl", 'r') as f:
-            fragment_src = f.read()
-    except IOError as e:
-        print(f"Failed to load shader files: {e}")
-        sys.exit(1)
+    vertex_src = load_shader("shaders/vertex_shader.glsl")
+    fragment_src = load_shader("shaders/fragment_shader.glsl")
 
     shader = compileProgram(
         compile_shader(vertex_src, GL_VERTEX_SHADER),
         compile_shader(fragment_src, GL_FRAGMENT_SHADER)
     )
 
-    # Buffer setup
     VAO = glGenVertexArrays(1)
     glBindVertexArray(VAO)
 
@@ -75,7 +71,6 @@ def main():
     glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 12, ctypes.c_void_p(0))
     glEnableVertexAttribArray(position)
 
-    # Projection and view matrices
     proj_matrix = pyrr.matrix44.create_perspective_projection_matrix(45, display[0]/display[1], 0.1, 1000)
     view_matrix = pyrr.matrix44.create_look_at(
         eye = np.array([0, 1, 3]),
@@ -89,7 +84,6 @@ def main():
     glUniformMatrix4fv(proj_loc, 1, GL_FALSE, proj_matrix)
     glUniformMatrix4fv(view_loc, 1, GL_FALSE, view_matrix)
 
-    # Main loop
     running = True
     while running:
         for event in pygame.event.get():
@@ -105,4 +99,7 @@ def main():
     sys.exit()
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--ply_file_path", default="./model.ply", help="Path to the .ply file")
+    args = parser.parse_args()
+    main(args.ply_file_path)

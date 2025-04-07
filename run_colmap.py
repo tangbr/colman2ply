@@ -31,15 +31,18 @@ def plot_metrics(metrics, title, ylabel):
     plt.show()
 
 def extract_metrics_from_output(output):
-    costs, gradients = [], []
-    for line in output:
-        if line.startswith('iter'):
-            parts = line.split()
-            if len(parts) > 2:
-                cost = float(parts[1])
-                gradient = float(parts[3])
+    costs = []
+    gradients = []
+    for line in output.split('\n'):
+        parts = line.strip().split()
+        if len(parts) > 1 and parts[0].isdigit():  # Checking if the line starts with an iteration number
+            try:
+                cost = float(parts[1])  # Assuming 'cost' is the second element
+                gradient = float(parts[3])  # Assuming 'gradient' is the fourth element
                 costs.append(cost)
                 gradients.append(gradient)
+            except ValueError as e:
+                print(f"Warning: Could not convert values to float. Error: {str(e)}")
     return costs, gradients
 
 def run_colmap(image_dir, output_dir, verbose=False):
