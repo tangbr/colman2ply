@@ -4,7 +4,7 @@ import numpy as np
 import pygame
 from pygame.locals import *
 from OpenGL.GL import *
-from OpenGL.GL.shaders import compileProgram, compileShader
+from OpenGL.GL.shaders import compileProgram
 import pyrr
 from plyfile import PlyData
 import torch  # For checking GPU availability
@@ -13,9 +13,23 @@ import torch  # For checking GPU availability
 ply_file_path = r"C:\Users\bruce\senecaAIG\output\model.ply"
 
 def load_ply(filepath):
-    plydata = PlyData.read(filepath)
-    vertex_data = np.array([list(x) for x in plydata['vertex'].data], dtype=np.float32)
-    return vertex_data
+    try:
+        plydata = PlyData.read(filepath)
+        vertex_data = np.array([list(x) for x in plydata['vertex'].data], dtype=np.float32)
+        return vertex_data
+    except Exception as e:
+        print(f"Failed to load .ply file: {e}")
+        sys.exit(1)
+
+def compile_shader(source, shader_type):
+    """Compile a shader from source."""
+    shader = glCreateShader(shader_type)
+    glShaderSource(shader, source)
+    glCompileShader(shader)
+    if glGetShaderiv(shader, GL_COMPILE_STATUS) != GL_TRUE:
+        info = glGetShaderInfoLog(shader).decode('utf-8')
+        raise RuntimeError(f'Shader compilation failed:\n{info}')
+    return shader
 
 def main():
     # Check for GPU availability
@@ -35,14 +49,18 @@ def main():
     glPointSize(5)
 
     # Load shaders
-    with open("shaders/vertex_shader.glsl", 'r') as f:
-        vertex_src = f.read()
-    with open("shaders/fragment_shader.glsl", 'r') as f:
-        fragment_src = f.read()
+    try:
+        with open("shaders/vertex_shader.glsl", 'r') as f:
+            vertex_src = f.read()
+        with open("shaders/fragment_shader.glsl", 'r') as f:
+            fragment_src = f.read()
+    except IOError as e:
+        print(f"Failed to load shader files: {e}")
+        sys.exit(1)
 
     shader = compileProgram(
-        compileShader(vertex_src, GL_VERTEX_SHADER),
-        compileShader(fragment_src, GL_FRAGMENT_SHADER)
+        compile_shader(vertex_src, GL_VERTEX_SHADER),
+        compile_shader(fragment_src, GL_FRAGMENT_SHADER)
     )
 
     # Buffer setup
