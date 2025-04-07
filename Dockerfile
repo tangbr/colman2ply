@@ -1,4 +1,4 @@
-# Use Ubuntu 22.04 (Jammy) with CUDA if GPU is needed
+# Use Ubuntu 20.04 with CUDA if GPU is needed
 FROM nvidia/cuda:11.0.3-runtime-ubuntu20.04
 
 # Avoid interactive prompts
@@ -38,7 +38,7 @@ RUN mkdir -p ./shaders ./data ./images ./output \
  && chmod -R 777 ./shaders ./data ./images ./output
 
 # Copy necessary files
-COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py ./
+COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py process_pipeline.py ./
 COPY ./shaders/ ./shaders/
 # Optional entrypoint
 # COPY docker_entrypoint.sh /app/
