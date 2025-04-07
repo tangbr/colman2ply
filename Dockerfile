@@ -1,5 +1,5 @@
 # Use Ubuntu 22.04 (Jammy) with CUDA if GPU is needed
-FROM nvidia/cuda:11.0-runtime-ubuntu22.04
+FROM nvidia/cuda:11.0.3-runtime-ubuntu20.04
 
 # Avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
