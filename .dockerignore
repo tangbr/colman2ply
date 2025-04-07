@@ -23,7 +23,7 @@ images/
 sparse/
 dense/
 output/
-
+data/
 # Large binary and database files
 *.mp4
 *.jpg
