@@ -17,7 +17,7 @@ RUN pip3 install --no-cache-dir opencv-python tqdm PyOpenGL PyOpenGL_accelerate 
 # Create a working directory
 WORKDIR /app
 
-RUN mkdir -p /app/shaders
+RUN mkdir -p /shaders
 
 COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py ./
 
