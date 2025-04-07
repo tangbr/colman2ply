@@ -21,7 +21,7 @@ RUN mkdir -p /shaders
 
 COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py ./
 
-COPY ../../../shaders/ ./shaders/
+COPY shaders/ ./shaders/
 
 # (Optional) If you want an entrypoint script
 # COPY docker_entrypoint.sh /app/docker_entrypoint.sh
