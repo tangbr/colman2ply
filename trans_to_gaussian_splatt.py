@@ -37,7 +37,7 @@ def load_shader(file_path):
         print(f"Failed to load shader file: {e}")
         sys.exit(1)
 
-def main(ply_file_path):
+def main(input_file, output_file):    #  (ply_file_path)
     device = "GPU" if torch.cuda.is_available() else "CPU"
     print(f"Running on {device}")
     print(f"Processing {input_file} to {output_file}")
@@ -105,4 +105,4 @@ if __name__ == "__main__":
     parser.add_argument("--output", type=str, required=True, help="Output .ply file path")
     args = parser.parse_args()
 
-    main(args.input, args.output)
+   # main(args.input, args.output)

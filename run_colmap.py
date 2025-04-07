@@ -33,7 +33,7 @@ def plot_metrics(metrics, title, ylabel):
 def extract_metrics_from_output(output):
     costs = []
     gradients = []
-    for line in output.split('\n'):
+    for line in output:  #  .split('\n')
         parts = line.strip().split()
         if len(parts) > 1 and parts[0].isdigit():  # Checking if the line starts with an iteration number
             try:

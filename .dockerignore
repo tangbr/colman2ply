@@ -39,3 +39,4 @@ Thumbs.db
 *.log
 *.tmp
 *.swp
+docker_entrypoint.sh
