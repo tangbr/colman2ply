@@ -23,7 +23,7 @@ jobs:
 
     - name: Build and Push Docker Image
       run: |
-        docker build --no-cache --rm -t ${{ secrets.DOCKERHUB_USERNAME }}/gaussian-style:ubuntu22 .
+        docker build --no-cache -t ${{ secrets.DOCKERHUB_USERNAME }}/gaussian-style:ubuntu22 .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/gaussian-style:ubuntu22
       # This step builds the Docker image without using the cache to ensure all layers are fresh
       # It then pushes the newly built image to DockerHub under the repository tagged as ubuntu22

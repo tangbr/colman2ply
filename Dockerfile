@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y xvfb colmap python3 python3-pip ffmpeg 
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Python packages for frame extraction scripts
-RUN pip3 install --no-cache-dir opencv-python tqdm PyOpenGL PyOpenGL_accelerate pygame numpy plyfile torch
+RUN pip3 install --no-cache-dir opencv-python tqdm PyOpenGL PyOpenGL_accelerate pygame numpy plyfile torch pip install matplotlib
+
 
 # Create a working directory
 WORKDIR /app
