@@ -38,7 +38,7 @@ RUN mkdir -p ./shaders ./data ./images ./output \
  && chmod -R 777 ./shaders ./data ./images ./output
 
 # Copy necessary files
-COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py process_pipeline.py ./
+COPY extract_frames.py run_colmap.py trans_to_gaussian_splatt.py process_pipeline.py opengl_renderer.py ./
 COPY ./shaders/ ./shaders/
 # Optional entrypoint
 # COPY docker_entrypoint.sh /app/
