@@ -20,7 +20,6 @@ build/
 # Data, video, and output files (mounted at runtime)
 video/
 images/
-sparse/
 dense/
 output/
 data/

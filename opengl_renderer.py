@@ -6,14 +6,14 @@ def init_gl():
     """Initialize OpenGL settings for rendering."""
     gl.glClearColor(0.0, 0.0, 0.0, 0.0)  # Set background color
     vertex_shader = """
-    #version 330
+    #version 140
     in vec3 position;
     void main() {
        gl_Position = vec4(position, 1.0);
     }
     """
     fragment_shader = """
-    #version 330
+    #version 140  # Adjusted to match the vertex shader version
     out vec4 fragColor;
     void main() {
        fragColor = vec4(1.0, 1.0, 1.0, 1.0);
@@ -46,4 +46,4 @@ def main():
     pygame.quit()
 
 if __name__ == "__main__":
-    main()
+    main()  
