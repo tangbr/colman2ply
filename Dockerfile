@@ -11,22 +11,22 @@ RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     ffmpeg \
-    libgl1-mesa-dev \
-    libglfw3 \
-    libglfw3-dev \
-    mesa-utils \
-    freeglut3-dev \
+    libgl1-mesa-dev \  # OpenGL libraries
+    libglfw3 \         # GLFW for window management
+    libglfw3-dev \     # Development files for GLFW
+    mesa-utils \       # Utilities for Mesa (OpenGL implementation)
+    freeglut3-dev \    # FreeGLUT for managing windows with OpenGL
  && pip3 install --no-cache-dir \
     opencv-python==4.5.2.54 \
     tqdm \
-    PyOpenGL \
-    PyOpenGL_accelerate \
-    pygame \
+    PyOpenGL \         # Python bindings for OpenGL
+    PyOpenGL_accelerate \  # Accelerate module for PyOpenGL
+    pygame \           # Python library for writing video games
     numpy \
     plyfile \
     torch \
     matplotlib \
-    pyrr \
+    pyrr \             # Python implementations of 3D mathematics functions
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
