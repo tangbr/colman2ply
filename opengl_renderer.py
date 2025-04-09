@@ -13,7 +13,7 @@ def init_gl():
     }
     """
     fragment_shader = """
-    #version 140  # Adjusted to match the vertex shader version
+    #version 140  
     out vec4 fragColor;
     void main() {
        fragColor = vec4(1.0, 1.0, 1.0, 1.0);
